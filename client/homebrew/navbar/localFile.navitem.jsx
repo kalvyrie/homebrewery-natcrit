@@ -2,10 +2,26 @@ import React from 'react';
 import sanitizeFilename from 'sanitize-filename';
 import Nav from './nav.jsx';
 
+//Pulls a usable title out of the first non-empty line of the brew's text,
+//stripping markdown heading/HB-markup syntax so it reads like a plain name.
+const firstLineTitle = (text)=>{
+	const firstLine = (text || '').split('\n').find((line)=>line.trim().length);
+	if(!firstLine) return '';
+
+	return firstLine
+		.trim()
+		.replace(/^#+\s*/, '')       //Markdown heading markers
+		.replace(/[{}]/g, '')        //HB mustache/style-tag syntax
+		.replace(/^\\page(?:break)?$/, '')
+		.trim();
+};
+
 //Download the current draft's raw source as a local .txt file, no save/share required.
 const exportDraft = (brew)=>{
-	let fileName = sanitizeFilename(`HB - ${brew.title}`).replaceAll(' ', '');
-	if(!fileName || !fileName.length) fileName = 'HB - Untitled-Brew';
+	const name = brew.title?.trim() || firstLineTitle(brew.text) || 'Untitled-Brew';
+
+	let fileName = sanitizeFilename(`HB - ${name}`).replaceAll(' ', '');
+	if(!fileName || !fileName.length) fileName = 'HB-Untitled-Brew';
 
 	const blob = new Blob([brew.text], { type: 'text/plain' });
 	const url  = URL.createObjectURL(blob);
