@@ -153,6 +153,9 @@
     "sanitize-filename": "1.6.4",
     "superagent": "^10.2.1"
   },
+  "overrides": {
+    "expr-eval": "npm:expr-eval-fork@^3.0.3"
+  },
   "devDependencies": {
     "@stylistic/stylelint-plugin": "^5.3.0",
     "babel-jest": "^30.4.1",
