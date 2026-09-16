@@ -7,10 +7,32 @@
 
 import Mongoose from 'mongoose';
 
-const getMongoDBURL = (config)=>{
-	return config.get('mongodb_uri') ||
-           config.get('mongolab_uri') ||
-		   'mongodb://127.0.0.1/homebrewery';  // changed from mongodb://localhost/homebrewery to accommodate versions 16+ of node.
+// Holds the in-memory Mongo instance (local dev only) so `disconnect` can stop it.
+let memoryServer;
+
+const isLocalEnv = (config)=>{
+	return config.get('local_environments').includes(config.get('node_env'));
+};
+
+// Local dev only, and only when no real DB URL was configured: boot an ephemeral,
+// on-disk-backed (WiredTiger) MongoDB instance instead of requiring mongod to be
+// installed/running. Lazily imported so the package isn't needed outside dev.
+const getLocalInMemoryMongoDBURL = async ()=>{
+	const { MongoMemoryServer } = await import('mongodb-memory-server');
+	memoryServer = await MongoMemoryServer.create({
+		instance : { storageEngine: 'wiredTiger' }
+	});
+	console.log('Started in-memory MongoDB instance for local development.');
+	return memoryServer.getUri('homebrewery');
+};
+
+const getMongoDBURL = async (config)=>{
+	const configuredUrl = config.get('mongodb_uri') || config.get('mongolab_uri');
+	if(configuredUrl) return configuredUrl;
+
+	if(isLocalEnv(config)) return await getLocalInMemoryMongoDBURL();
+
+	return 'mongodb://127.0.0.1/homebrewery';  // changed from mongodb://localhost/homebrewery to accommodate versions 16+ of node.
 };
 
 const handleConnectionError = (error)=>{
@@ -31,13 +53,18 @@ const addListeners = (conn)=>{
 };
 
 const disconnect = async ()=>{
-	return await Mongoose.disconnect();
+	await Mongoose.disconnect();
+	if(memoryServer) {
+		await memoryServer.stop();
+		memoryServer = undefined;
+	}
 };
 
 const connect = async (config)=>{
-	return await Mongoose.connect(getMongoDBURL(config), {
+	const url = await getMongoDBURL(config);
+	return await Mongoose.connect(url, {
 		retryWrites : false,
-		autoIndex   : (config.get('local_environments').includes(config.get('node_env')))
+		autoIndex   : isLocalEnv(config)
 	})
 	.then(addListeners(Mongoose))
 	.catch((error)=>handleConnectionError(error));
