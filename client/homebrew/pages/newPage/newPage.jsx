@@ -16,15 +16,16 @@ import SplitPane    from '@components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-import Nav            from '@navbar/nav.jsx';
-import Navbar         from '@navbar/navbar.jsx';
-import NewBrewItem    from '@navbar/newbrew.navitem.jsx';
-import AccountNavItem from '@navbar/account.navitem.jsx';
-import ErrorNavItem   from '@navbar/error-navitem.jsx';
-import HelpNavItem    from '@navbar/help.navitem.jsx';
-import VaultNavItem   from '@navbar/vault.navitem.jsx';
-import PrintNavItem   from '@navbar/print.navitem.jsx';
-import RecentNavItems from '@navbar/recent.navitem.jsx';
+import Nav              from '@navbar/nav.jsx';
+import Navbar           from '@navbar/navbar.jsx';
+import NewBrewItem      from '@navbar/newbrew.navitem.jsx';
+import LocalFileNavItem from '@navbar/localFile.navitem.jsx';
+import AccountNavItem   from '@navbar/account.navitem.jsx';
+import ErrorNavItem     from '@navbar/error-navitem.jsx';
+import HelpNavItem      from '@navbar/help.navitem.jsx';
+import VaultNavItem     from '@navbar/vault.navitem.jsx';
+import PrintNavItem     from '@navbar/print.navitem.jsx';
+import RecentNavItems   from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 
 // Page specific imports
@@ -127,6 +128,7 @@ const NewPage = (props)=>{
 					? <ErrorNavItem error={error} clearError={clearError} />
 					: renderSaveButton()}
 				<NewBrewItem />
+				<LocalFileNavItem brew={currentBrew} setBrew={setCurrentBrew} />
 				<PrintNavItem />
 				<HelpNavItem />
 				<VaultNavItem />
