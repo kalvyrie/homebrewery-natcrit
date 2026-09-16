@@ -34,6 +34,7 @@ import { gzipSync, strToU8 }             from 'fflate';
 import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
 
 import ShareNavItem              from '@navbar/share.navitem.jsx';
+import LocalFileNavItem          from '@navbar/localFile.navitem.jsx';
 import LockNotification from './lockNotification/lockNotification.jsx';
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 import googleDriveIcon from '../../googleDrive.svg';
@@ -222,6 +223,7 @@ const EditPage = (props)=>{
 						{renderAutoSaveButton()}
 					</Nav.dropdown>}
 				<NewBrewItem />
+				<LocalFileNavItem brew={currentBrew} setBrew={setCurrentBrew} />
 				<PrintNavItem />
 				<HelpNavItem />
 				<VaultNavItem />

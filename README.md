@@ -79,6 +79,8 @@ When the Homebrewery server is started for the first time, it will modify the da
 
 On completion, you should be able to go to [http://localhost:8000](http://localhost:8000) in your browser and use The Homebrewery offline.
 
+While running locally, you can save a draft's markdown to a local `.txt` file and load one back in from the editor's "local file" menu (export/import), without needing an account or sharing the brew first.
+
 If you had any issue at all, here are some links that may be useful:
 - [Course](https://learn.mongodb.com/courses/m103-basic-cluster-administration) on cluster administration, useful for beginners
 - [Mongo community forums](https://www.mongodb.com/community/forums/)
