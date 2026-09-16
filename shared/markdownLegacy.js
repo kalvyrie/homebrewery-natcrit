@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import Markdown from 'markedLegacy';
-const renderer = new Markdown.Renderer();
+import { marked as Markdown, Renderer } from 'markedLegacy';
+const renderer = new Renderer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
